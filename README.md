@@ -2,6 +2,18 @@
 
 This repository contains scripts to classify eelgrass in drone imagery using a Random Forest model trained on annotated pixel data.
 
+## GIS Preprocessing Steps
+
+Before using this eelgrass classification tool, you must prepare your input data using GIS software.
+
+### 1. Generate Labeled Training Points
+- Create a point feature class with labeled points (e.g., `1 = eelgrass`, `0 = non-eelgrass`)
+- Field names should be standardized (`G_Code`)
+
+### 2. Extract Band Data 
+
+- Use GIS software to extract band from imagery (.tif) data at each point and save as `Band_1`, `Band_2`, `Band_3`
+
 ## Overview
 
 - `Train_RandomForest.py`  
