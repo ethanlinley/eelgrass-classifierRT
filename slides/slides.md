@@ -18,7 +18,7 @@ Save them as shapefiles or CSV with field `G_Code`.
 
 Use GIS software to extract band imagery data from 3 band aerial imagery at each point and save as `Band_1`, `Band_2`, and `Band_3`.
 
-![Example of training points table](images/training_points.png)
+![Example of training points table](images/training_table.png)
 ---
 
 ## Step 3: Train the Classifier
@@ -37,8 +37,8 @@ python Eelgrass_RandomTrees_Final.py
 
 ## Step 5: Evaluate Results
 
-Add output raster into GIS platform and evaluate results as needed.
+Add output raster into GIS platform, classify, and evaluate results as needed.
+
 
 ![Example of a classified output in GIS software for visualization](images/classified_output.png)
-
 
