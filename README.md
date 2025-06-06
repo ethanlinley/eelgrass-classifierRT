@@ -2,57 +2,95 @@
 
 This repository contains scripts to classify eelgrass in drone imagery using a Random Forest model trained on annotated pixel data.
 
-## GIS Preprocessing Steps
+## Problem Statement
 
-Before using this eelgrass classification tool, you must prepare your input data using GIS software.
+Eelgrass is a vital estuarine plant that is natural and critical to the Moro Bay Estuary ecosystem and was at risk of disappearing until recent efforts. Accurately monitoring eelgrass distribution is a goal of the Moro Bay Estuary Program but can be a time-consuming process using traditional methods. 
 
-### 1. Generate Labeled Training Points
-- Create a point feature class with labeled points (e.g., `1 = eelgrass`, `0 = non-eelgrass`)
-- Field names should be standardized (`G_Code`)
+This project aims to:
+ -Automate the classification of eelgrass vs. non-eelgrass in drone imagery.
+ -Replace ArcGIS-based workflows with open-source, scriptable, easily repeatable methods.
+ -Handle large geospatial raster files using tiling methods to prevent memory issues and enable large raster files to be processed using personal workspaces.
 
-### 2. Extract Band Data 
+## Methodology
 
-- Use GIS software to extract band from imagery (.tif) data at each point and save as `Band_1`, `Band_2`, `Band_3`
+### Data Preprocessing 
+ 1. Create Ground Truth Points:
+	-Create sample pixels labeled as eelgrass (`1`) or non-eelgrass (`0`) based on imagery and denote as 'G_Code'.
+	*Optional*: Have multiple users ground truth each point and use only the unanimously agreed points for accuracy. 
 
-## Overview
+ 2. Extract Raster Bands:
+	- Sample band values (RGB) at each labeled point and create columns: `Band_1`, `Band_2`, `Band_3`.
+	-Export as a 'csv' with columns: `G_Code`, `Band_1`, `Band_2`, `Band_3` representing ground truth and the 3 band values from the imagery raster. 
 
-- `Train_RandomForest.py`  
-   Trains a Random Forest model using extracted band values and eelgrass labels from a CSV.
+### Model Training (Python)
 
-- `Eelgrass_RandomTrees_Final.py`  
-   Applies the trained model to classify eelgrass vs. non-eelgrass in a raster tile-by-tile.
+Script: `src/Train_RandomForest.py`
 
----
+This script trains a Random Forest classifier using the exported training CSV.
 
-## File Descriptions
+- Input:  
+  CSV file with ground truth labels and 3-band values.
 
-### `Train_RandomForest.py`
+- Output:  
+  A saved `.pkl` model file.
 
-**Inputs:**
-- A CSV file with fields `G_Code`, `Band_1`, `Band_2`, `Band_3`
+-Command to run:
+python src/Train_RandomForest.py
 
-**Outputs:**
-- A saved Random Forest model (`eelgrass_model.pkl`)
+### Raster Classification (Python)
 
-### `Eelgrass_RandomTrees_Final.py`
+Script: src/Eelgrass_RandomTrees_Final.py     #update the file paths inside the script before running
 
-**Inputs:**
-- The trained model (`.pkl`)
-- A 3-band raster (`.tif`)
+This script reads an entire raster image, divides it into appropriately-sized tiles, applies the trained model, and creates pixel-based predictions into the output raster.
 
-**Outputs:**
-- A classified raster (`.tif`) with 0 = non-eelgrass, 1 = eelgrass
+- Input:
+  A 3-band '.tif' raster
+  The '.pkl' trained model 
+- Output
+  A classified '.tif' raster with values '0' (non-eelgrass) or '1' (eelgrass).
 
----
+Features: 
+ -Tiling function to prevent memory overflow
+ -Error handling
+ -Adjustable block size to aid with performance
 
-## Usage
+-Command to run:
+python src/Eelgrass_RandomTrees_Final.py  #update paths inside the script for your local '.tif' model.
 
-### Train the model:
+## Results
 
-```bash
-python Train_RandomForest.py
+-Successfully processed a full raster (17.7GB) on a standard laptop.
+-Output raster clearly delineated eelgrass zones from non-eelgrass zones.
+-Significantly more streamlined and customizable than arduous ArcGIS Pro workflow. 
 
-Update the file paths in `Train_RandomForest.py` to your actual CSV location and column names, then run:
+## Tools and Uses
 
-```bash
-python Train_RandomForest.py
+Python: Core scripting language
+scikit-learn: Machine learning 
+rasterio: Raster processing
+joblib: Model saving and loading
+numpy, pandas: Data wrangling
+ArcGIS Pro: Ground truth creation, data extraction, and visualization
+
+## Requirements 
+
+Install dependencies with: 
+pip install -r requirements.txt
+
+Contents of 'requirements.txt'
+pandas>=1.3
+numpy>=1.21
+scikit-learn>=1.1
+rasterio>=1.2
+joblib>=1.1
+
+## What I Learned
+
+-How to train and use a machine learning model for a geospatial classification.
+-How to efficiently handle and process large raster files.
+-How to use open-source and Python workflows instead of ESRI-based workflows.
+-How to document and execute version control for geospatial work. 
+
+## Reflection 
+
+This project challenged me to integrate concepts from GIS, coding, and machine learning into one solution to a geospatial problem. I gained valuable experience working with new dependencies, weaning away from my comfort zone in ESRI products, and understanding core python, and machine learning concepts as they apply to geospatial solutions. 
