@@ -63,6 +63,13 @@ python src/Eelgrass_RandomTrees_Final.py  #update paths inside the script for yo
 -Output raster clearly delineated eelgrass zones from non-eelgrass zones.
 -Significantly more streamlined and customizable than arduous ArcGIS Pro workflow. 
 
+## Output Example
+
+Sample result showing the classified eelgrass (red) vs. non-eelgrass
+
+
+![Classified Output](outputs/classified_output.png)
+
 ## Tools and Uses
 
 Python: Core scripting language
